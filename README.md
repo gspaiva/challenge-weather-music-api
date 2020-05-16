@@ -1,13 +1,6 @@
-<h1>Music weather APi - Ifood Backend</h1>
+<h1>Playlists to listen to according to the weather forecast/h1>
 
-The main project goal is to learn about kotlin server side utilization
-and solve the challenge backend ifood.
+Main purpose : Just for learning kotlin server side use through ifood backend challenge
 
-https://github.com/ifood/vemproifood-backend
+Challenge repo : https://github.com/ifood/vemproifood-backend
 
-
-#Architecture
-
-#Build
-
-#Run
