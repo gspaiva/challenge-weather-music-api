@@ -1,6 +1,6 @@
 package com.music.weather.musicweather.music.data.musics.api
 
-import com.music.weather.musicweather.music.domain.entities.Playlist
+import com.music.weather.musicweather.music.domain.entities.Music
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
@@ -24,23 +24,22 @@ class SpotifyApiImpl : MusicApi {
         return request.jsonObject.getString("access_token")
     }
 
-    override fun getPlaylistByGenre(genre: String): List<Playlist> {
+    override fun getMusicsByGenre(genre: String): List<Music> {
         val token = authenticate()
         val request = khttp.get("https://api.spotify.com/v1/search",
-                params = mapOf("q" to genre, "type" to "playlist"),
+                params = mapOf("q" to genre, "type" to "track", "limit" to "50"),
                 headers = mapOf("Authorization" to "Bearer $token",
                         "Content-Type" to "application/json")
         )
 
-        val playlistsJson = request.jsonObject.getJSONObject("playlists").getJSONArray("items")
-        var playlists  = ArrayList<Playlist>()
-        for(i in 0 until playlistsJson.length()){
-            val playlistJson = playlistsJson.getJSONObject(i)
-            val openSpotifyUrl = playlistJson.getJSONObject("external_urls").getString("spotify")
-            val playlist = Playlist(playlistJson.getString("name"), openSpotifyUrl, "Spotify")
-            playlists.add(playlist)
+        val musicsJson = request.jsonObject.getJSONObject("tracks").getJSONArray("items")
+        val musics  = ArrayList<Music>()
+        for(i in 0 until musicsJson.length()){
+            val musicJson = musicsJson.getJSONObject(i)
+            val url = musicJson.getJSONObject("external_urls").getString("spotify")
+            musics.add(Music(musicJson.getString("name"), url))
         }
 
-        return playlists
+        return musics
     }
 }

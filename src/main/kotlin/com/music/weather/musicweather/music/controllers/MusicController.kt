@@ -1,15 +1,15 @@
 package com.music.weather.musicweather.music.controllers
 
+import com.music.weather.musicweather.music.data.dto.MusicWeatherDTO
 import com.music.weather.musicweather.music.domain.entities.City
-import com.music.weather.musicweather.music.domain.entities.Playlist
+import com.music.weather.musicweather.music.domain.entities.Location
 import com.music.weather.musicweather.music.domain.service.SearchMusicService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/music")
@@ -17,9 +17,25 @@ import org.springframework.web.bind.annotation.RestController
 class MusicController @Autowired constructor(val searchMusicService: SearchMusicService){
 
     @GetMapping("/city")
-    @ApiOperation("Search a music playlist to your city based on weather")
-    fun searchMusicByCityWeather(@RequestParam cityName : String) : List<Playlist>?{
-        val city = City(cityName)
-        return searchMusicService.searchPlaylistByCity(city)
+    @ApiOperation("Given a city name search a music playlist to your city based on weather")
+    fun searchMusicByCityWeather(@RequestParam("name") name : String): ResponseEntity<MusicWeatherDTO>{
+        return try{
+            val city = City(name)
+            ResponseEntity.ok().body(searchMusicService.searchMusicsByCity(city))
+        } catch (exception: Exception){
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+
+    @GetMapping("/city/coordinates")
+    @ApiOperation("Given a coordinates search a music playlist to your city based on weather")
+    fun searchMusicByLongitudeAndLatitude(@RequestParam lat : Float, @RequestParam lon : Float): ResponseEntity<MusicWeatherDTO>{
+        return try{
+            val location = Location(lat, lon)
+            ResponseEntity.ok().body(searchMusicService.searchMusicsByLocation(location))
+        } catch (exception: Exception){
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 }

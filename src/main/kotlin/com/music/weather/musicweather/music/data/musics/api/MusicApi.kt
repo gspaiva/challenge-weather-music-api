@@ -1,8 +1,8 @@
 package com.music.weather.musicweather.music.data.musics.api
 
-import com.music.weather.musicweather.music.domain.entities.Playlist
+import com.music.weather.musicweather.music.domain.entities.Music
 
 interface MusicApi {
     fun authenticate() : String
-    fun getPlaylistByGenre(genre : String) : List<Playlist>
+    fun getMusicsByGenre(genre : String) : List<Music>
 }

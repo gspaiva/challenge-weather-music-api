@@ -1,3 +1,4 @@
 package com.music.weather.musicweather.music.domain.entities
 
-class Music (val name : String, val url: String)
+class Location (val lat: Float, val lon: Float){
+}
