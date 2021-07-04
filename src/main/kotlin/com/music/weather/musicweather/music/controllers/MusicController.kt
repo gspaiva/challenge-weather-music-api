@@ -20,7 +20,7 @@ class MusicController @Autowired constructor(val searchMusicService: SearchMusic
     @ApiOperation("Given a city name search a music playlist to your city based on weather")
     fun searchMusicByCityWeather(@RequestParam("name") name : String): ResponseEntity<MusicWeatherDTO>{
         return try{
-            val city = City(name)
+            val city = City(name.toLowerCase())
             ResponseEntity.ok().body(searchMusicService.searchMusicsByCity(city))
         } catch (exception: Exception){
             ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -31,11 +31,7 @@ class MusicController @Autowired constructor(val searchMusicService: SearchMusic
     @GetMapping("/city/coordinates")
     @ApiOperation("Given a coordinates search a music playlist to your city based on weather")
     fun searchMusicByLongitudeAndLatitude(@RequestParam lat : Float, @RequestParam lon : Float): ResponseEntity<MusicWeatherDTO>{
-        return try{
-            val location = Location(lat, lon)
-            ResponseEntity.ok().body(searchMusicService.searchMusicsByLocation(location))
-        } catch (exception: Exception){
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
-        }
+        val location = Location(lat, lon)
+        return ResponseEntity.ok().body(searchMusicService.searchMusicsByLocation(location))
     }
 }

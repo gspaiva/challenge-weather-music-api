@@ -5,19 +5,21 @@ import com.music.weather.musicweather.music.data.musics.api.MusicApi
 import com.music.weather.musicweather.music.data.weather.api.WeatherApi
 import com.music.weather.musicweather.music.domain.entities.City
 import com.music.weather.musicweather.music.domain.entities.Location
-import com.music.weather.musicweather.music.domain.entities.Music
 import com.music.weather.musicweather.music.domain.entities.Weather
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class SearchMusicService @Autowired constructor(private val weatherApi : WeatherApi, private val musicApi : MusicApi) {
+
+
     fun searchMusicsByCity(city : City) : MusicWeatherDTO{
         val temperature = weatherApi.getTemperatureByCity(city)
         return getMusicsFromTemperature(temperature)
     }
 
     fun searchMusicsByLocation(location : Location) : MusicWeatherDTO{
+        location.id = "${location.lat}:${location.lon}"
         val temperature = weatherApi.getTemperatureByLocation(location)
         return getMusicsFromTemperature(temperature)
     }

@@ -2,6 +2,7 @@ package com.music.weather.musicweather.music.data.musics.api
 
 import com.music.weather.musicweather.music.domain.entities.Music
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -24,6 +25,7 @@ class SpotifyApiImpl : MusicApi {
         return request.jsonObject.getString("access_token")
     }
 
+    @Cacheable("musics")
     override fun getMusicsByGenre(genre: String): List<Music> {
         val token = authenticate()
         val request = khttp.get("https://api.spotify.com/v1/search",
