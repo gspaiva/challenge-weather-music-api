@@ -28,18 +28,28 @@ class SpotifyApiImpl : MusicApi {
     @Cacheable("musics")
     override fun getMusicsByGenre(genre: String): List<Music> {
         val token = authenticate()
-        val request = khttp.get("https://api.spotify.com/v1/search",
-                params = mapOf("q" to genre, "type" to "track", "limit" to "50"),
+        val requestPlaylists = khttp.get("https://api.spotify.com/v1/search",
+                params = mapOf("q" to genre, "type" to "playlist", "limit" to "50"),
                 headers = mapOf("Authorization" to "Bearer $token",
                         "Content-Type" to "application/json")
         )
 
-        val musicsJson = request.jsonObject.getJSONObject("tracks").getJSONArray("items")
+        val playlistsJson = requestPlaylists.jsonObject.getJSONObject("playlists").getJSONArray("items")
+        val idFirstPlaylist = playlistsJson.getJSONObject(0).getString("id")
+
+        val requestTracks = khttp.get("https://api.spotify.com/v1/playlists/${idFirstPlaylist}/tracks",
+            params = mapOf("market" to "BR", "limit" to "100"),
+            headers = mapOf("Authorization" to "Bearer $token",
+                "Content-Type" to "application/json")
+        )
+
+        val items = requestTracks.jsonObject.getJSONArray("items")
         val musics  = ArrayList<Music>()
-        for(i in 0 until musicsJson.length()){
-            val musicJson = musicsJson.getJSONObject(i)
-            val url = musicJson.getJSONObject("external_urls").getString("spotify")
-            musics.add(Music(musicJson.getString("name"), url))
+        for(i in 0 until items.length()){
+            val track = items.getJSONObject(i).getJSONObject("track")
+
+            val url = track.getJSONObject("external_urls").getString("spotify")
+            musics.add(Music(track.getString("name"), url))
         }
 
         return musics
