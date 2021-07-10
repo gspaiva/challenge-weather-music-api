@@ -5,5 +5,6 @@ import com.music.weather.musicweather.music.domain.entities.Weather
 
 data class MusicWeatherDTO (
     val weather: Weather,
-    val musics: List<Music>
+    val musics: List<Music>,
+    val musicsGenre: String
         )

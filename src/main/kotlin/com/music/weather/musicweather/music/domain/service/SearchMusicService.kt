@@ -27,14 +27,14 @@ class SearchMusicService @Autowired constructor(private val weatherApi : Weather
     private fun getMusicsFromTemperature (temperature: Float?): MusicWeatherDTO{
 
         if(temperature == null){
-            return MusicWeatherDTO(Weather(null), listOf())
+            return MusicWeatherDTO(Weather(null), listOf(), "")
         }
 
         return when {
-            temperature > 30 -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("party"))
-            temperature in 15.0..30.0 -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("pop"))
-            temperature in 10.0..14.0 -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("rock"))
-            else -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("classical"))
+            temperature > 30 -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("party"), "party")
+            temperature in 15.0..30.0 -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("pop"), "pop")
+            temperature in 10.0..14.99 -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("rock"), "rock")
+            else -> MusicWeatherDTO(Weather(temperature), musicApi.getMusicsByGenre("classical"), "classical")
         }
     }
 }
